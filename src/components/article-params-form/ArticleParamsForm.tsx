@@ -1,7 +1,4 @@
 import { ArrowButton } from 'src/ui/arrow-button';
-import { Button } from 'src/ui/button';
-
-import styles from './ArticleParamsForm.module.scss';
 import {
 	ArticleStateType,
 	backgroundColors,
@@ -11,13 +8,15 @@ import {
 	fontFamilyOptions,
 	fontSizeOptions,
 } from 'src/constants/articleProps';
-import clsx from 'clsx';
-import { useState } from 'react';
-import { Text } from 'src/ui/text';
-import { Select } from 'src/ui/select';
+import { Button } from 'src/ui/button';
 import { RadioGroup } from 'src/ui/radio-group';
+import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
 import { useModal } from 'src/hooks';
+import { useRef, useState } from 'react';
+import clsx from 'clsx';
+import styles from './ArticleParamsForm.module.scss';
 
 type Props = {
 	appState: ArticleStateType;
@@ -25,7 +24,8 @@ type Props = {
 };
 
 export const ArticleParamsForm = ({ appState, setAppState }: Props) => {
-	const { isOpen, toggle } = useModal(false);
+	const rootRef = useRef<HTMLElement>(null);
+	const { isOpen, toggle } = useModal(false, rootRef);
 	const [fontFamily, setFontFamily] = useState(appState.fontFamilyOption);
 	const [fontSize, setFontSize] = useState(appState.fontSizeOption);
 	const [fontColor, setFontColor] = useState(appState.fontColor);
@@ -51,6 +51,7 @@ export const ArticleParamsForm = ({ appState, setAppState }: Props) => {
 		setBgColor(defaultArticleState.backgroundColor);
 		setContentWidth(defaultArticleState.contentWidth);
 		setFontSize(defaultArticleState.fontSizeOption);
+		setAppState(defaultArticleState);
 	};
 
 	return (
@@ -59,7 +60,8 @@ export const ArticleParamsForm = ({ appState, setAppState }: Props) => {
 			<aside
 				className={clsx(styles.container, {
 					[styles.container_open]: isOpen,
-				})}>
+				})}
+				ref={rootRef}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
